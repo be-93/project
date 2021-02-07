@@ -1,0 +1,44 @@
+plugins {
+	id 'org.springframework.boot' version '2.4.2'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.backend'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.h2database:h2'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	compile group: 'org.bouncycastle', name: 'bcprov-jdk16', version: '1.46'
+	compile group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
+	compile 'org.slf4j:slf4j-api:1.7.5'
+	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+	compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
+	compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+	compile group: 'bouncycastle', name: 'bcprov-jdk15', version: '140'
+	compile group: 'jaxen', name: 'jaxen', version: '1.2.0'
+	compile group: 'org.json', name: 'json', version: '20201115'
+}
+
+test {
+	useJUnitPlatform()
+}
