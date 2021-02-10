@@ -1,23 +1,13 @@
 package com.backend.project.exception;
 
+public class HomeTaxException extends CustomException{
 
-public class HomeTaxException extends Exception{
-    public HomeTaxException() {
-        super();
-    }
-    public HomeTaxException(String message) {
-        super(message);
+    public HomeTaxException(ErrorCode errorCode) {
+        super(errorCode);
     }
 
-    public HomeTaxException(String message, Throwable cause) {
-        super(message, cause);
+    public HomeTaxException(ErrorCode errorCode, String message) {
+        super(errorCode , message);
     }
 
-    public HomeTaxException(Throwable cause) {
-        super(cause);
-    }
-
-    public HomeTaxException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

@@ -1,8 +1,10 @@
 package com.backend.project.api;
 
 import com.backend.project.entity.RequestSignData;
+import com.backend.project.exception.CustomExceptionHandler;
 import com.backend.project.scrapUtil.HomeTaxLogin;
 import com.backend.project.scrapUtil.SignDecr;
+import com.backend.project.service.ScrapService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -18,28 +20,34 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class HomeTaxApiController {
+public class HomeTaxApiController extends CustomExceptionHandler {
 
-    private final SignDecr signDecr;
-    private final HomeTaxLogin homeTaxLogin;
+    private final ScrapService service;
 
+    // 스크래핑 데이터를 저장하지 않고 직접 데이터 받아오기
     @RequestMapping(value = "/api/v1/scrap" , method = RequestMethod.POST)
-    public Result scrap(RequestSignData request) throws Exception {
-        HashMap<String, String> sign = signDecr.sign(request);
-        HashMap<String, String> login = homeTaxLogin.login(sign);
-        List<HashMap<String, Object>> result = homeTaxLogin.scrap(login, request);
-        return new Result(result.stream().map(ScrapData::new).collect(Collectors.toList()));
+    public Result scrapV1(RequestSignData request) throws Exception {
+        List<HashMap<String, Object>> result = service.scrapDirectCall(request);
+        return new Result(200 ,result.stream().map(ScrapDataDto::new).collect(Collectors.toList()));
+    }
+
+    // 스크래핑 데이터를 데이터베이스에 저장 후 데이터 받아오기
+    @RequestMapping(value = "/api/v2/scrap" , method = RequestMethod.POST)
+    public Result scrapV2(RequestSignData request) throws Exception {
+        List<HashMap<String, Object>> result = service.scrapV2(request);
+        return new Result(200 , result.stream().map(ScrapDataDto::new).collect(Collectors.toList()));
     }
 
     @Data
     @AllArgsConstructor
     static class Result<T> {
+        private int status;
         private T data;
     }
 
     // 리턴해줄 데이터 셋
     @Data
-    public class ScrapData {
+    public class ScrapDataDto {
 
         private String incDdcNm;
         private String mdxpsDdcYn;
@@ -65,7 +73,7 @@ public class HomeTaxApiController {
         private Integer trsDt;
         private String incDdcYn;
 
-        public ScrapData(HashMap<String, Object> o) {
+        public ScrapDataDto(HashMap<String, Object> o) {
 
             this.rcprTin = o.get("rcprTin").toString();
             this.incDdcNm = o.get("incDdcNm").toString();

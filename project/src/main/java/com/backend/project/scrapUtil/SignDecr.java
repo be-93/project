@@ -25,10 +25,13 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.backend.project.exception.ErrorCode;
+import com.backend.project.exception.HomeTaxException;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -48,9 +51,6 @@ import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.jsoup.Connection.Method;
-import org.jsoup.Connection.Response;
-import org.jsoup.Jsoup;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -204,6 +204,8 @@ public class SignDecr {
                 decryptedKey = cipher.doFinal(data.getOctets());
             }
 
+        }catch (BadPaddingException e){
+            throw new HomeTaxException(ErrorCode.PASSWORD_ERROR);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -268,7 +270,7 @@ public class SignDecr {
         try {
             X509certificate = (X509Certificate) CertificateFactory.getInstance("X509").generateCertificate(requestSignData.getSingCert().getInputStream());
         } catch (Exception e) {
-            log.error(e.getMessage());
+//            log.error(e.getMessage());
         }
         return X509certificate;
     }
@@ -319,14 +321,14 @@ public class SignDecr {
 
         boolean verifty = signaturePublic.verify(sign);
 
-        log.info("전자서명 검증 결과 : " + verifty);
-
-        log.info("[ ******************************************************************* ]");
-        log.info("서명용 공개키 일렬번호 : " + certificate.getSerialNumber());
-        log.info("전자서명한 값 : " +  Base64.getEncoder().encodeToString(sign) );
-        log.info("서명용 공개키 BASE 64 PEM : " + "-----BEGIN CERTIFICATE-----" + Base64.getEncoder().encodeToString(certificate.getEncoded()) + "-----END CERTIFICATE-----" );
-        log.info("서명용 개인키 RANDOM 값 : " + privateRandomValue);
-        log.info("[ ******************************************************************* ]");
+//        log.info("전자서명 검증 결과 : " + verifty);
+//
+//        log.info("[ ******************************************************************* ]");
+//        log.info("서명용 공개키 일렬번호 : " + certificate.getSerialNumber());
+//        log.info("전자서명한 값 : " +  Base64.getEncoder().encodeToString(sign) );
+//        log.info("서명용 공개키 BASE 64 PEM : " + "-----BEGIN CERTIFICATE-----" + Base64.getEncoder().encodeToString(certificate.getEncoded()) + "-----END CERTIFICATE-----" );
+//        log.info("서명용 개인키 RANDOM 값 : " + privateRandomValue);
+//        log.info("[ ******************************************************************* ]");
 
         String certPem = "-----BEGIN CERTIFICATE-----" + Base64.getEncoder().encodeToString(certificate.getEncoded()) + "-----END CERTIFICATE-----";
         String logSgnt = signTextInfo.get("pkcEncSsn").toString() + "$" + certificate.getSerialNumber() + "$" + toDay + "$" + Base64.getEncoder().encodeToString(sign) ;
@@ -394,11 +396,11 @@ public class SignDecr {
                 result.put(cookie.getName(), cookie.getValue());
             }
 
-            log.info("[ ************* 서명 문자열 GET 결과 ************* ]");
-            log.info( "WMONID : " + result.get("WMONID") );
-            log.info( "TXPPsessionID : " + result.get("TXPPsessionID") );
-            log.info( "pkcEncSsn : " + result.get("pkcEncSsn") );
-            log.info("[ ****************************************** ]");
+//            log.info("[ ************* 서명 문자열 GET 결과 ************* ]");
+//            log.info( "WMONID : " + result.get("WMONID") );
+//            log.info( "TXPPsessionID : " + result.get("TXPPsessionID") );
+//            log.info( "pkcEncSsn : " + result.get("pkcEncSsn") );
+//            log.info("[ ****************************************** ]");
 
             return result;
         }

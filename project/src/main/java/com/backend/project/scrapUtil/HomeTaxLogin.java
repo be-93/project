@@ -1,5 +1,6 @@
 package com.backend.project.scrapUtil;
 
+import com.backend.project.exception.ErrorCode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.backend.project.entity.RequestSignData;
@@ -23,15 +24,15 @@ public class HomeTaxLogin {
 
     public HashMap<String, String> login(HashMap<String, String> signData) throws Exception{
 
-        log.info("[ ************* homeTaxLogin param *************** ]");
-        log.info("cert : " + signData.get("cert"));
-        log.info("logSgnt : " + signData.get("logSgnt"));
-        log.info("randomEnc : " + signData.get("randomEnc"));
-        log.info("pkcEncSsn : " + signData.get("pkcEncSsn"));
-        log.info("TXPPsessionID : " + signData.get("TXPPsessionID"));
-        log.info("WMONID : " + signData.get("WMONID"));
-        log.info("NTS_LOGIN_SYSTEM_CODE_P : " + signData.get("NTS_LOGIN_SYSTEM_CODE_P"));
-        log.info("[ ************************************************ ]");
+//        log.info("[ ************* homeTaxLogin param *************** ]");
+//        log.info("cert : " + signData.get("cert"));
+//        log.info("logSgnt : " + signData.get("logSgnt"));
+//        log.info("randomEnc : " + signData.get("randomEnc"));
+//        log.info("pkcEncSsn : " + signData.get("pkcEncSsn"));
+//        log.info("TXPPsessionID : " + signData.get("TXPPsessionID"));
+//        log.info("WMONID : " + signData.get("WMONID"));
+//        log.info("NTS_LOGIN_SYSTEM_CODE_P : " + signData.get("NTS_LOGIN_SYSTEM_CODE_P"));
+//        log.info("[ ************************************************ ]");
 
         HashMap<String, String> cookies = new HashMap<String, String>();
         cookies.put("TXPPsessionID",signData.get("TXPPsessionID"));
@@ -45,8 +46,8 @@ public class HomeTaxLogin {
                 .method(Method.POST)
                 .execute();
 
-        log.info("국세청 로그인 시도 결과 : " + res.body() );
-        log.info("국세청 로그인 COOKIE  : " + res.cookies() );
+//        log.info("국세청 로그인 시도 결과 : " + res.body() );
+//        log.info("국세청 로그인 COOKIE  : " + res.cookies() );
 
         // 공인인증서를 통해 로그인 성공시 TXPPsessionID 값이 새로 발급 된다.
         cookies.put("TXPPsessionID",res.cookies().get("TXPPsessionID"));
@@ -56,7 +57,7 @@ public class HomeTaxLogin {
         if(login){
             return cookies;
         }else{
-            throw new HomeTaxException("로그인 연동에 실패하였습니다.");
+            throw new HomeTaxException(ErrorCode.LOGIN_ERROR);
         }
 
     }
@@ -71,7 +72,7 @@ public class HomeTaxLogin {
         String result = resBody.substring(resBody.indexOf("#") + 1 , resBody.lastIndexOf("#"));
 
         if(result.length() > 0){
-            throw new HomeTaxException(result);
+            throw new HomeTaxException(ErrorCode.LOGIN_ERROR, result);
         }else{
             return true;
         }
@@ -188,10 +189,10 @@ public class HomeTaxLogin {
                 .ignoreContentType(true) // 컨텐츠 타입을 무시하고 가져오도록
                 .execute();
 
-        log.info("[ ************* 드래곤볼 GET 결과 ************* ]");
-        log.info( res.body() );
-        log.info( "COOKIE INFO" + res.cookies() );
-        log.info("[ ****************************************** ]");
+//        log.info("[ ************* 드래곤볼 GET 결과 ************* ]");
+//        log.info( res.body() );
+//        log.info( "COOKIE INFO" + res.cookies() );
+//        log.info("[ ****************************************** ]");
 
         // XML 로 받아온 데이터를 JSON 형식으로 변환
         org.json.JSONObject xmlJsonObject = org.json.XML.toJSONObject(res.body());
