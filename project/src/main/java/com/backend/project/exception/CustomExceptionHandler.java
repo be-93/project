@@ -18,10 +18,10 @@ public class CustomExceptionHandler {
 //    @PersistenceContext
 //    private EntityManager em;
 
-    //CustomException을 상속받은 클래스가 예외를 발생 시킬 시, Catch하여 ErrorResponse를 반환한다.
-    @ExceptionHandler(CustomException.class)
+    //HomeTaxException 을 상속받은 클래스가 예외를 발생 시킬 시, Catch하여 ErrorResponse를 반환한다.
+    @ExceptionHandler(HomeTaxException.class)
     @Transactional
-    protected ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
+    protected ResponseEntity<ErrorResponse> handleCustomException(HomeTaxException e) {
         log.error("## CustomException", e);
 
         ErrorCode errorCode = e.getErrorCode();
