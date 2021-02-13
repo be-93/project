@@ -120,7 +120,8 @@ public class SignDecr {
                 int keySize = 256;
                 PBEParametersGenerator generator = new PKCS5S2ParametersGenerator();
                 generator.init( PBEParametersGenerator.PKCS5PasswordToBytes(requestSignData.getSignPassword().toCharArray()), derOctetStringSalt.getOctets(), asn1IntegerIC.getValue().intValue());
-                byte[] iv = derOctetStringIV.getOctets(); KeyParameter key = (KeyParameter)generator.generateDerivedParameters(keySize);
+                byte[] iv = derOctetStringIV.getOctets();
+                KeyParameter key = (KeyParameter)generator.generateDerivedParameters(keySize);
 
                 // 복호화 수행
                 IvParameterSpec ivSpec = new IvParameterSpec(iv);
@@ -224,40 +225,40 @@ public class SignDecr {
         }
         try {
             byte[] decryptedKey = getDecryptedKey(requestSignData);
-            try (ByteArrayInputStream bIn2 = new ByteArrayInputStream(decryptedKey); ASN1InputStream aIn2 = new ASN1InputStream(bIn2);) {
+            ByteArrayInputStream bIn2 = new ByteArrayInputStream(decryptedKey);
+            ASN1InputStream aIn2 = new ASN1InputStream(bIn2);
 
-                ASN1Object asn1Object = (ASN1Object) aIn2.readObject();
-                DERSequence seq = (DERSequence) asn1Object.toASN1Object();
-                //log.info("DLSequence seq size : " +  seq.size());
+            ASN1Object asn1Object = (ASN1Object) aIn2.readObject();
+            DERSequence seq = (DERSequence) asn1Object.toASN1Object();
+            //log.info("DLSequence seq size : " +  seq.size());
 
-                int i = 0;
-                while (i < seq.size()) {
-                    //log.info("CLASS NAME : " +  seq.getObjectAt(i).getClass().getName());
-                    if (seq.getObjectAt(i) instanceof DERTaggedObject) {
-                        DERTaggedObject dertTaggedObject = (DERTaggedObject) seq.getObjectAt(i);
-                        if (dertTaggedObject.getTagNo() == 0) {
-                            DERSequence seq2 = (DERSequence) dertTaggedObject.getObject();
-                            //log.info("seq2 : " +  seq2.toString());
-                            int j = 0;
-                            while (j < seq2.size()) {
-                                //log.info("seq2.getObjectAt(i)" +  seq2.getObjectAt(j).getClass().getName());
-                                if (seq2.getObjectAt(j) instanceof ASN1ObjectIdentifier) {
-                                    ASN1ObjectIdentifier idRandomNumOID = (ASN1ObjectIdentifier) seq2.getObjectAt(j);
-                                    //log.info("idRandomNumOID : " +  idRandomNumOID.toString());
-                                    if ("1.2.410.200004.10.1.1.3".equals(idRandomNumOID.toString())) {
-                                        DERSet derSet = (DERSet) seq2.getObjectAt(j + 1);
-                                        DERBitString DERBitString = (DERBitString) derSet.getObjectAt(0);
-                                        //log.info("DERBitString : " +  DERBitString);
-                                        DEROctetString DEROctetString = new DEROctetString(DERBitString.getBytes());
-                                        return Base64.getEncoder().encodeToString(DEROctetString.getOctets());
-                                    }
+            int i = 0;
+            while (i < seq.size()) {
+                //log.info("CLASS NAME : " +  seq.getObjectAt(i).getClass().getName());
+                if (seq.getObjectAt(i) instanceof DERTaggedObject) {
+                    DERTaggedObject dertTaggedObject = (DERTaggedObject) seq.getObjectAt(i);
+                    if (dertTaggedObject.getTagNo() == 0) {
+                        DERSequence seq2 = (DERSequence) dertTaggedObject.getObject();
+                        //log.info("seq2 : " +  seq2.toString());
+                        int j = 0;
+                        while (j < seq2.size()) {
+                            //log.info("seq2.getObjectAt(i)" +  seq2.getObjectAt(j).getClass().getName());
+                            if (seq2.getObjectAt(j) instanceof ASN1ObjectIdentifier) {
+                                ASN1ObjectIdentifier idRandomNumOID = (ASN1ObjectIdentifier) seq2.getObjectAt(j);
+                                //log.info("idRandomNumOID : " +  idRandomNumOID.toString());
+                                if ("1.2.410.200004.10.1.1.3".equals(idRandomNumOID.toString())) {
+                                    DERSet derSet = (DERSet) seq2.getObjectAt(j + 1);
+                                    DERBitString DERBitString = (DERBitString) derSet.getObjectAt(0);
+                                    //log.info("DERBitString : " +  DERBitString);
+                                    DEROctetString DEROctetString = new DEROctetString(DERBitString.getBytes());
+                                    return Base64.getEncoder().encodeToString(DEROctetString.getOctets());
                                 }
-                                j++;
                             }
+                            j++;
                         }
                     }
-                    i++;
                 }
+                i++;
             }
         } catch (Exception e) {
             log.error("getIdentityCheck 오류 : ", e);

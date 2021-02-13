@@ -30,7 +30,7 @@ public class RequestSignData {
 
     // 필수값 검증 편의 메소드
     public void hashError() throws HomeTaxException {
-        System.out.println("singPri.getName().endsWith(\".key\") = " + singPri.getOriginalFilename());
+
         if (singPri.isEmpty()) {
             throw new HomeTaxException(ErrorCode.SIGN_PRI_NOT_FOUND);
         }else if(singCert.isEmpty()){
