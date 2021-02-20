@@ -103,7 +103,7 @@ public class SignDecr {
                 ASN1Sequence asn1Sequence2 = (ASN1Sequence)algId.getParameters();
                 ASN1Sequence asn1Sequence3 = (ASN1Sequence)asn1Sequence2.getObjectAt(0);
 
-                // PBKDF2 Key derivation algorithm
+                // PBKDF2 Key 알고리즘 유도값
                 ASN1Sequence asn1Sequence33 = (ASN1Sequence)asn1Sequence3.getObjectAt(1);
 
                 // Salt 값
