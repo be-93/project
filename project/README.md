@@ -28,10 +28,10 @@ REST API 를 통하여 타 시스템과의 연계 할 수 있도록 REST API 를
 # :pushpin:
 - Source Repository : (https://github.com/be-93/project)
 - 공인인증서 관련
-    - [공인인증서 복호화](/homeTax/공인인증서_복호화.md)
-    - [공인인증서 전자서명](/homeTax/공인인증서_전자서명.md)
-    - [홈택스 로그인 연동](/homeTax/홈택스_로그인.md)
-- [REST API 를 이용한 홈택스 데이터 수집](/homeTax/API_V1.md)
-- [JPA 를 사용해 간단하게 홈택스 데이터 저장](/homeTax/API_V2.md)
-- [ExceptionHandler 를 이용한 홈택스 예외 처리](/homeTax/홈택스_예외처리.md)
+    - [공인인증서 복호화](/md/공인인증서_복호화.md)
+    - [공인인증서 전자서명](/md/공인인증서_전자서명.md)
+    - [홈택스 로그인 연동](/md/홈택스_로그인.md)
+- [REST API 를 이용한 홈택스 데이터 수집](/md/API_V1.md)
+- [JPA 를 사용해 간단하게 홈택스 데이터 저장](/md/API_V2.md)
+- [ExceptionHandler 를 이용한 홈택스 예외 처리](/md/홈택스_예외처리.md)
 
